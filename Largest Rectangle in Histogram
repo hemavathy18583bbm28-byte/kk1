@@ -1,0 +1,23 @@
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        # Append 0 to flush any remaining bars in the stack at the end
+        heights.append(0)
+        stack = [] # Stores indices of bars in increasing height order
+        max_area = 0
+        
+        for i, h in enumerate(heights):
+            # When we find a shorter bar, the taller bars in the stack 
+            # can no longer extend to the right.
+            while stack and heights[stack[-1]] >= h:
+                height = heights[stack.pop()]
+                # If stack is empty, this bar was the shortest so far (width is i)
+                # Otherwise, width is between current index and new stack top
+                width = i if not stack else i - stack[-1] - 1
+                max_area = max(max_area, height * width)
+            
+            stack.append(i)
+            
+        # Optional: remove the 0 if the original list must remain unchanged
+        heights.pop() 
+        return max_area
+  
