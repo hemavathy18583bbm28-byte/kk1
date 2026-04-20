@@ -1,0 +1,52 @@
+from typing import List
+
+class Solution:
+    def reversePairs(self, nums: List[int]) -> int:
+        def merge_sort_and_count(sub_array, left, right):
+            if left >= right:
+                return 0
+            
+            mid = (left + right) // 2
+            count = merge_sort_and_count(sub_array, left, mid) + merge_sort_and_count(sub_array, mid + 1, right)
+            
+            # Count reverse pairs (nums[i] > 2 * nums[j])
+            i = left
+            j = mid + 1
+            while i <= mid and j <= right:
+                # Use long to prevent potential overflow issues during multiplication
+                if sub_array[i] > 2 * sub_array[j]: 
+                    count += (mid - i + 1)
+                    j += 1
+                else:
+                    i += 1
+            
+            # Merge the two sorted halves (standard merge sort)
+            temp = []
+            i = left
+            j = mid + 1
+            while i <= mid and j <= right:
+                if sub_array[i] <= sub_array[j]:
+                    temp.append(sub_array[i])
+                    i += 1
+                else:
+                    temp.append(sub_array[j])
+                    j += 1
+            
+            while i <= mid:
+                temp.append(sub_array[i])
+                i += 1
+            
+            while j <= right:
+                temp.append(sub_array[j])
+                j += 1
+            
+            for k in range(len(temp)):
+                sub_array[left + k] = temp[k]
+            
+            return count
+
+        # A copy might be needed to avoid modifying the original list unexpectedly in some scenarios, 
+        # but in Python, modifying the list in place works fine for this approach.
+        return merge_sort_and_count(nums, 0, len(nums) - 1)
+
+    
