@@ -1,0 +1,14 @@
+class Solution:
+    def longestPrefix(self, s: str) -> str:
+        """
+        Finds the longest proper prefix of 's' that is also a suffix of 's'.
+        Uses string hashing for an efficient solution.
+        """
+        n = len(s)
+        # We need a proper prefix, so we check lengths from n-1 down to 1
+        for length in range(n - 1, 0, -1):
+            # Check if prefix of 'length' matches suffix of 'length'
+            if s[:length] == s[n - length:]:
+                return s[:length]
+        
+        return ""
