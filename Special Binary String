@@ -1,0 +1,21 @@
+class Solution:
+    def makeLargestSpecial(self, s: str) -> str:
+        specials = []
+        count = 0
+        i = 0
+        
+        # Split the string into primitive special substrings
+        for j, c in enumerate(s):
+            count += 1 if c == '1' else -1
+            if count == 0:
+                # Found a top-level special substring: s[i..j]
+                # Recursively process the inner content: '1' + inner + '0'
+                inner = self.makeLargestSpecial(s[i+1:j])
+                specials.append('1' + inner + '0')
+                i = j + 1
+        
+        # Sort primitive special substrings in descending order
+        specials.sort(reverse=True)
+        
+        # Join and return the result
+        return ''.join(specials)
