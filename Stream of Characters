@@ -1,0 +1,43 @@
+class StreamChecker:
+    def __init__(self, words: list[str]):
+        # Initialize a Trie with reversed words
+        self.trie = {}
+        self.stream = []
+        # Max length of words in input to limit stream buffer size
+        self.max_len = 0
+        
+        for word in words:
+            self.max_len = max(self.max_len, len(word))
+            node = self.trie
+            # Insert word into Trie in reverse
+            for char in reversed(word):
+                if char not in node:
+                    node[char] = {}
+                node = node[char]
+            node['#'] = True # Marker for end of a word
+
+    def query(self, letter: str) -> bool:
+        # Append new character to the stream
+        self.stream.append(letter)
+        
+        # Keep only the last max_len characters to save memory
+        if len(self.stream) > self.max_len:
+            self.stream.pop(0)
+            
+        # Search the current stream suffix in the reversed Trie
+        node = self.trie
+        for i in range(len(self.stream) - 1, -1, -1):
+            char = self.stream[i]
+            if char not in node:
+                return False
+            node = node[char]
+            if '#' in node:
+                return True # Found a matching suffix
+        
+        return False
+
+
+
+# Your StreamChecker object will be instantiated and called as such:
+# obj = StreamChecker(words)
+# param_1 = obj.query(letter)
